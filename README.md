@@ -163,4 +163,27 @@
 
   
 
+  -  moreButton 추가
+
+  ```
+  moreButtonClickEvent()
+  }
+  
+  
+  private fun moreButtonClickEvent(){
+      binding.btUserInfo.setOnClickListener {
+          val intent = Intent(this, UserInfoActivity::class.java)
+          startActivity(intent)
+      }
+  }
+  ```
+
+
+
+- 이미지
+
+  ![Assignemt2-3](C:\Users\kht07\OneDrive\바탕 화면\Assignemt2-3.png)
+
+  
+
   
