@@ -7,15 +7,19 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.htk.assginment2.adapters.HomeFragmentAdpater
-import com.htk.assginment2.data.RepositoryInfo
+import com.htk.assginment2.data.LocalRepoDataSource
+import com.htk.assginment2.data.RepoDataSource
+import com.htk.assginment2.presentation.model.RepositoryInfo
 
 import com.htk.assginment2.databinding.FragmentHomeBinding
 
 
 class HomeFragment : Fragment() {
-    private lateinit var homeFragmentAdpater: HomeFragmentAdpater
+    private val homeFragmentAdapter by lazy { HomeFragmentAdpater()}
+    private lateinit var repoDataSource : RepoDataSource
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding ?: error("View를 참조하기 위해 binding이 초기화 되지 않았습니다.")
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,31 +31,18 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+       initHomeView()
 
-        homeFragmentAdpater = HomeFragmentAdpater()
-        binding.repoList.adapter = homeFragmentAdpater
+    }
 
-        homeFragmentAdpater.repoList.addAll(
-            listOf(
-                RepositoryInfo(
-                    repoName = "팀플",
-                    repoExplain = "팀프로젝트",
-                    language = "코틀린"
-                ),
-                RepositoryInfo(
-                    repoName = "솝트_안드",
-                    repoExplain = "세미나",
-                    language = "코틀린"
-                ),
-                RepositoryInfo(
-                    repoName = "파이썬 스터디",
-                    repoExplain = "코테 뿌셔!!",
-                    language = "파이썬"
-                )
+    private fun initHomeView(){
+        binding.repoList.adapter = homeFragmentAdapter
+        homeFragmentAdapter.submitList(fetchData())
+    }
 
-            )
-        )
-        homeFragmentAdpater.notifyDataSetChanged()
+    private fun fetchData(): List<RepositoryInfo>{
+        repoDataSource = LocalRepoDataSource()
+        return repoDataSource.fetchRepoData()
     }
 
     override fun onDestroyView() {

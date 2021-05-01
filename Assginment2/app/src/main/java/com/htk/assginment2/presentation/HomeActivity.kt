@@ -4,31 +4,40 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.core.content.ContextCompat.startActivity
 import com.htk.assginment2.R
 import com.htk.assginment2.databinding.ActivityHomeBinding
 
-class
-HomeActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityHomeBinding
+class HomeActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityHomeBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val homeFragment = HomeFragment()
 
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.home_fragment, homeFragment)
-        transaction.commit()
-        binding.tvHomename.setText("hotaek Kwak")
-        binding.tvHomeid.text = intent.getStringExtra("id")
-        binding.tvHomeintroduce.setText("안드 사랑해 보고싶다. 안드 사랑 해보고싶다.")
-
+        homeBind()
+        homeFragmentLink()
         moreButtonClickEvent()
     }
 
+    private fun homeBind(){
+        with(binding) {
+            tvHomename.text = "hotaek kwak"
+            tvHomeid.text = intent.getStringExtra("id")
+            tvHomeintroduce.text = "안드 사랑해 보고싶다. 안드 사랑 해보고싶다."
+        }
+    }
 
-    private fun moreButtonClickEvent(){
+    private fun homeFragmentLink(){
+        val homeFragment = HomeFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.add(R.id.home_fragment, homeFragment)
+        transaction.commit()
+    }
+
+
+    private fun moreButtonClickEvent() {
         binding.btUserInfo.setOnClickListener {
             val intent = Intent(this, UserInfoActivity::class.java)
             startActivity(intent)

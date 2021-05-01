@@ -17,6 +17,8 @@ class SignUpActivity : AppCompatActivity() {
 
         initSignupButtonClickEvent()
     }
+
+
     private fun initSignupButtonClickEvent() {
         binding.btRegister.setOnClickListener {
             setLogin()

@@ -9,10 +9,16 @@ class UserInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_user_info)
 
+
+        followingFramgentLink()
+    }
+
+
+    private fun followingFramgentLink(){
         val follwingFragment = FollowingFragment()
 
         val transaction = supportFragmentManager.beginTransaction()
-        transaction.add(R.id.user_info_fragment, FollowingFragment())
+        transaction.add(R.id.user_info_fragment, follwingFragment)
         transaction.commit()
     }
 }

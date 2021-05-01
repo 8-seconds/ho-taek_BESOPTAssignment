@@ -1,4 +1,4 @@
-package com.htk.assginment2.data
+package com.htk.assginment2.presentation.model
 
 data class RepositoryInfo(
     val repoName : String,
