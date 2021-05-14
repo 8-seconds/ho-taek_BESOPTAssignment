@@ -23,6 +23,7 @@ class HomeFragmentAdpater :
     //notifyDataSetchanged() 대신 사용
     object RepoDiffUtil : DiffUtil.ItemCallback<RepositoryInfo>(){
         override fun areItemsTheSame(oldItem: RepositoryInfo, newItem: RepositoryInfo): Boolean {
+            //hashcode를 사용하면 value값을 더 쉽게 찾아낼 수 있다.
             return oldItem.hashCode() == newItem.hashCode()
         }
 

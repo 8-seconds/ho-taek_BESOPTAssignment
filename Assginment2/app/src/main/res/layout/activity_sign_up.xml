@@ -78,7 +78,7 @@
         >
 
         <TextView
-            android:id="@+id/tv_signpassword"
+            android:id="@+id/tv_sign_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/password"
@@ -86,11 +86,11 @@
             app:layout_constraintEnd_toEndOf="parent"/>
 
         <EditText
-            android:id="@+id/et_signpassword"
+            android:id="@+id/et_sign_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            app:layout_constraintTop_toBottomOf="@+id/tv_signpassword"
+            app:layout_constraintTop_toBottomOf="@+id/tv_sign_password"
             app:layout_constraintEnd_toEndOf="parent"
             android:hint="비밀번호를 입력해주세요"/>
 

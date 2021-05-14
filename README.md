@@ -1,190 +1,204 @@
-### Level1: 안린이 탈출하기 (HomeActivity 추가하기!)
+### Level1: 안린이 탈출하기
 
-- item_home.xml - recyclerview item 만들기.(ellipsize 사용해서 ...만들기)
+(1) - Postman 테스트 사진
+
+- 로그인
+
+![로그인_postman](https://user-images.githubusercontent.com/71322949/118225793-b8147100-b4c0-11eb-928b-4b3442db62f2.png)
+
+- 회원가입
+
+  ![회원가입_postman](https://user-images.githubusercontent.com/71322949/118225932-f7db5880-b4c0-11eb-913c-d1764ce1da5b.png)
+
+
+
+(2) 회원가입 -> 로그인
+
+<img src="https://user-images.githubusercontent.com/71322949/118235124-4394fe80-b4cf-11eb-9cf9-f414f5c43522.png" alt="Screenshot_1620976002" style="zoom:25%;" /><img src="https://user-images.githubusercontent.com/71322949/118235143-4ee82a00-b4cf-11eb-9b9d-8987f9847f75.png" alt="Screenshot_1620976028" style="zoom:25%;" />
+
+
+
+<img src="https://user-images.githubusercontent.com/71322949/118235187-62939080-b4cf-11eb-8636-baf74eda617f.png" alt="Screenshot_1620976031" style="zoom:25%;" /><img src="https://user-images.githubusercontent.com/71322949/118235212-6a533500-b4cf-11eb-8e61-85b5d6b353a6.png" alt="Screenshot_1620976038" style="zoom:25%;" />
+
+- manifest에 인터넷 permission하기
 
   ```
-  <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:padding="20dp">
+  <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.htk.assginment2">
   
-      <TextView
-          android:id="@+id/tv_rp_name"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/rp_name"
-          android:textSize="20sp"
-          android:textStyle="bold"
-          android:maxLength="1"
-          android:ellipsize="end"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toTopOf="parent" />
-  
-      <TextView
-          android:id="@+id/tv_rp_explain"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="10dp"
-          android:hint="@string/rp_explain"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/tv_rp_name" />
-  
-      <TextView
-          android:id="@+id/tv_language"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginTop="10dp"
-          android:hint="@string/language"
-          app:layout_constraintStart_toStartOf="parent"
-          app:layout_constraintTop_toBottomOf="@+id/tv_rp_explain" />
-  
-  </androidx.constraintlayout.widget.ConstraintLayout>
+      <uses-permission android:name="android.permission.INTERNET"/>
   ```
 
 
 
-- homeFragment dataclass 만들기
+- Retrofit Interface 설계! : 서버에 요청을 보내고 받는 상호작용 방법의 정의
 
   ```
-  data class RepositoryInfo(
-      val repoName : String,
-      val repoExplain : String,
-      val language : String?
+  interface SoptService {
+      @POST("/login/signin")		
+      fun postLogin(
+          @Body body: RequestLoginData
+      ) : Call<ResponseLoginData>
+  
+      @POST("/login/signup")
+      fun postSignUp(
+          @Body body: RequestSignUpData
+      ): Call<ResponseSignUpData>
+  }
+  ```
+
+  
+
+- Request 객체 설계 (Login Data)
+
+  ```
+  data class RequestLoginData(
+      @SerializedName("email")
+      val id: String,
+      val password: String,
   )
   ```
-
   
-
-- ViewHolder 만들기
+  
+  
+- Request 객체 설계 (Sign Up Data)
 
   ```
-   class HomeFragmentViewHolder(
-          private val binding : ItemHomeBinding
-      ) : RecyclerView.ViewHolder(binding.root){
-          fun onBind(repositoryInfo: RepositoryInfo){
-              binding.tvRpName.text = repositoryInfo.repoName
-              binding.tvRpExplain.text = repositoryInfo.repoExplain
-              binding.tvLanguage.text = repositoryInfo.language
+  data class RequestSignUpData(
+      @SerializedName("email")
+      val id : String,
+      val password : String,
+      val nickname : String,
+      val sex : String,
+      val phone : String,
+      val birth : String
+  )
+  ```
+  
+  
+  
+- Response 객체 설계(Login Data)
+
+  ```
+  data class ResponseLoginData(
+      val success: Boolean,
+      val message: String,
+      val data: Data?
+  ) {
+      data class Data(
+          @SerializedName("UserId")
+          val userId: Int,
+          val user_nickname: String,
+          val token: String
+      )
+  }
+  ```
+  
+  
+  
+- Response 객체 설계(Sign up Data)
+
+  ```
+  data class ResponseSignUpData(
+      val success: Boolean,
+      val message: String,
+      val data: Data?
+  ){
+      data class Data(
+      val nickname : String
+      )
+  }
+  ```
+  
+  
+  
+- Retrofit Interface 구현체 만들기(Sigleton 패턴)
+
+  ```
+  object ServiceCreator {
+      private const val BASE_URL = "http://cherishserver.com"
+  
+      private val retrofit: Retrofit = Retrofit.Builder()
+          .baseUrl(BASE_URL)
+          .addConverterFactory(GsonConverterFactory.create())
+          .build()
+  
+      val soptService : SoptService=retrofit.create(SoptService::class.java)
+  }
+  ```
+  
+  
+
+  -  callback 등록! (Login)
+
+  ```
+   private fun loginButtonClickEvent() {
+          binding.btLogin.setOnClickListener {
+              val requestLoginData = RequestLoginData(
+                  id = binding.etId.text.toString(),
+                  password = binding.etPassword.text.toString()
+              )
+  
+              val call: Call<ResponseLoginData> = ServiceCreator.soptService
+                  .postLogin(requestLoginData)
+              call.enqueue(object: Callback<ResponseLoginData>{
+                  override fun onResponse(
+                      call: Call<ResponseLoginData>,
+                      response: Response<ResponseLoginData>
+                  ) {
+                      if (response.isSuccessful){
+                          val data = response.body()?.data
+                          Toast.makeText(this@SignInActivity, data?.user_nickname, Toast.LENGTH_SHORT).show()
+  
+                          startHomeActivity()
+                      }else{
+                          Toast.makeText(this@SignInActivity, "등록되지 않은 회원입니다.", Toast.LENGTH_SHORT).show()
+                      }
+                  }
+  
+                  override fun onFailure(call: Call<ResponseLoginData>, t: Throwable) {
+                      Log.d("NetworkTest", "error:${t}")
+                  }
+              })
           }
-      }
   ```
 
-  
+- callback 등록 (회원가입)
 
-- HomeFragmentAdapter
+```
+private fun initSignupButtonClickEvent() {
+    binding.btRegister.setOnClickListener {
+        val requestSignUpData = RequestSignUpData(
+            id = binding.etSignId.text.toString(),
+            nickname = binding.etName.text.toString(),
+            password = binding.etSignPassword.text.toString(),
+            sex = "0",
+            phone = "010-3368-4293",
+            birth = "1997.07.07"
 
-  ```
-  class HomeFragmentAdpater: RecyclerView.Adapter<HomeFragmentAdpater.HomeFragmentViewHolder>() {
-      val repoList = mutableListOf<RepositoryInfo>()
-  
-      override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeFragmentViewHolder {
-          val binding = ItemHomeBinding.inflate(
-              LayoutInflater.from(parent.context),
-              parent,
-              false)
-  
-          return HomeFragmentViewHolder(binding)
-      }
-  
-      override fun onBindViewHolder(
-          holder: HomeFragmentAdpater.HomeFragmentViewHolder,
-          position: Int
-      ) {
-      holder.onBind(repoList[position])
-      }
-  
-      override fun getItemCount(): Int {
-          return repoList.size
-      }
-  ```
+        )
 
-  
+        val call : Call<ResponseSignUpData> = ServiceCreator.soptService
+            .postSignUp(requestSignUpData)
+        call.enqueue(object: Callback<ResponseSignUpData>{
+            override fun onResponse(
+                call: Call<ResponseSignUpData>,
+                response: Response<ResponseSignUpData>
+            ) {
+                if (response.isSuccessful){
+                    Toast.makeText(this@SignUpActivity, "회원가입 성공", Toast.LENGTH_SHORT).show()
+                    setLogin()
+                } else{
+                    Toast.makeText(this@SignUpActivity, "다시 입력해주세요", Toast.LENGTH_SHORT).show()
+                }
+            }
 
-- RecyclerView 배치(fragment_home.xml)
-
-  ```
-  <?xml version="1.0" encoding="utf-8"?>
-  <androidx.constraintlayout.widget.ConstraintLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools"
-      xmlns:app="http://schemas.android.com/apk/res-auto"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      tools:context=".presentation.HomeFragment">
-  
-      <androidx.recyclerview.widget.RecyclerView
-          android:id="@+id/repo_list"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-          app:layout_constraintTop_toTopOf="parent"
-          app:layout_constraintStart_toStartOf="parent"
-          tools:listitem="@layout/item_home"/>
-  
-  </androidx.constraintlayout.widget.ConstraintLayout>
-  ```
-
-  
-
-- activity_home에 Fragment 부착하기
-
-  ```
-  <androidx.constraintlayout.widget.ConstraintLayout
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              app:layout_constraintTop_toBottomOf="@+id/cl_home">
-  
-              <androidx.fragment.app.FragmentContainerView
-                  android:id="@+id/home_fragment"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
-  ```
-
-  
-
-- HomeActivity에 fragment 연결하기
-
-  ```
-  HomeActivity : AppCompatActivity() {
-      private lateinit var binding : ActivityHomeBinding
-      override fun onCreate(savedInstanceState: Bundle?) {
-          super.onCreate(savedInstanceState)
-          binding = ActivityHomeBinding.inflate(layoutInflater)
-          setContentView(binding.root)
-  
-          val homeFragment = HomeFragment()
-  
-          val transaction = supportFragmentManager.beginTransaction()
-          transaction.add(R.id.home_fragment, homeFragment)
-          transaction.commit()
-  ```
-
-  
-
-  -  moreButton 추가
-
-  ```
-  moreButtonClickEvent()
-  }
-  
-  
-  private fun moreButtonClickEvent(){
-      binding.btUserInfo.setOnClickListener {
-          val intent = Intent(this, UserInfoActivity::class.java)
-          startActivity(intent)
-      }
-  }
-  ```
-
-
-
-
-
-...2단계, 3단계는 내일 시험 끝나고 할 예정
-
-
+            override fun onFailure(call: Call<ResponseSignUpData>, t: Throwable) {
+                Log.d("NetworkTest", "error:${t}")
+            }
+        })
+    }
+```
 
 
 

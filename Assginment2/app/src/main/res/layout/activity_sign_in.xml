@@ -21,7 +21,7 @@
         android:id="@+id/tv_id"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="깃허브 아이디"
+        android:text="id"
         android:layout_marginStart="20dp"
         android:layout_marginTop="150dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,7 +35,7 @@
         android:layout_marginEnd="20dp"
         app:layout_goneMarginEnd="20dp"
         android:ems="10"
-        android:hint="아이디를 입력해주세요"
+        android:hint="@string/plz_id"
         android:inputType="textPersonName"
         android:background="@drawable/input_selector"
         android:paddingVertical="13dp"
@@ -48,7 +48,7 @@
         android:id="@+id/tv_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="비밀번호"
+        android:text="@string/password"
         android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="@+id/et_id"
         app:layout_constraintTop_toBottomOf="@+id/et_id" />
@@ -99,13 +99,13 @@
         android:id="@+id/bt_signup"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_marginStart="40dp"
         android:layout_marginEnd="80dp"
-        android:layout_marginStart="20dp"
-        android:background="#00FFFFFF"
-        android:textColor="@color/white"
-        android:text="회원가입"
+        android:backgroundTint="@color/grayC3"
+        android:text="@string/sign_up"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tv_no_id"
-        app:layout_constraintTop_toTopOf="@+id/tv_no_id"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="@+id/tv_no_id" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

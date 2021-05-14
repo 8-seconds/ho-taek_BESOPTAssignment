@@ -7,7 +7,13 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.htk.assginment2.api.ServiceCreator
+import com.htk.assginment2.data.request.RequestLoginData
+import com.htk.assginment2.data.response.ResponseLoginData
 import com.htk.assginment2.databinding.ActivitySignInBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class SignInActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySignInBinding
@@ -24,29 +30,47 @@ class SignInActivity : AppCompatActivity() {
 
     private fun loginButtonClickEvent() {
         binding.btLogin.setOnClickListener {
-            val userId = binding.etId.text.toString()
-            val userPassword = binding.etPassword.text.toString()
-            // 값이 Null이거나 비어있을 경우 괄호 부분을 실행
-            if (userId.isNullOrBlank() or userPassword.isNullOrBlank()) {
-                Toast.makeText(this@SignInActivity, "아이디/비밀번호를 확인해주세요", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(this@SignInActivity, "로그인 성공", Toast.LENGTH_SHORT)
-                    .show()
-                val intent1 = Intent(this@SignInActivity, HomeActivity::class.java)
-                intent1.putExtra("id",userId)
-                startActivity(intent1)
-            }
+            val requestLoginData = RequestLoginData(
+                id = binding.etId.text.toString(),
+                password = binding.etPassword.text.toString()
+            )
+
+            val call: Call<ResponseLoginData> = ServiceCreator.soptService
+                .postLogin(requestLoginData)
+            call.enqueue(object: Callback<ResponseLoginData>{
+                override fun onResponse(
+                    call: Call<ResponseLoginData>,
+                    response: Response<ResponseLoginData>
+                ) {
+                    if (response.isSuccessful){
+                        val data = response.body()?.data
+                        Toast.makeText(this@SignInActivity, data?.user_nickname, Toast.LENGTH_SHORT).show()
+
+                        startHomeActivity()
+                    }else{
+                        Toast.makeText(this@SignInActivity, "등록되지 않은 회원입니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseLoginData>, t: Throwable) {
+                    Log.d("NetworkTest", "error:${t}")
+                }
+            })
         }
 
     }
+
+    private fun startHomeActivity() {
+        val intent = Intent(this, HomeActivity::class.java)
+        startActivity(intent)
+    }
+
     private fun signUpButtonClickEvent() {
         val launcher: ActivityResultLauncher<Intent> =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
                     activityResult ->
                 if (activityResult.resultCode == RESULT_OK){
                     val name = activityResult.data?.getStringExtra("name")
-
                     val id = activityResult.data?.getStringExtra("id")
                     val password = activityResult.data?.getStringExtra("password")
                     binding.etId.setText(id)
