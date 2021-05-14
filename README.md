@@ -14,11 +14,17 @@
 
 (2) 회원가입 -> 로그인
 
-<img src="https://user-images.githubusercontent.com/71322949/118235124-4394fe80-b4cf-11eb-9cf9-f414f5c43522.png" alt="Screenshot_1620976002" style="zoom:25%;" /><img src="https://user-images.githubusercontent.com/71322949/118235143-4ee82a00-b4cf-11eb-9b9d-8987f9847f75.png" alt="Screenshot_1620976028" style="zoom:25%;" />
+<img src="https://user-images.githubusercontent.com/71322949/118235124-4394fe80-b4cf-11eb-9cf9-f414f5c43522.png" alt="Screenshot_1620976002" width = "150px"  /><img src="https://user-images.githubusercontent.com/71322949/118235143-4ee82a00-b4cf-11eb-9b9d-8987f9847f75.png" alt="Screenshot_1620976028" width = "150px" /><img src="https://user-images.githubusercontent.com/71322949/118235187-62939080-b4cf-11eb-8636-baf74eda617f.png" alt="Screenshot_1620976031" width = "150px" />
 
 
 
-<img src="https://user-images.githubusercontent.com/71322949/118235187-62939080-b4cf-11eb-8636-baf74eda617f.png" alt="Screenshot_1620976031" style="zoom:25%;" /><img src="https://user-images.githubusercontent.com/71322949/118235212-6a533500-b4cf-11eb-8e61-85b5d6b353a6.png" alt="Screenshot_1620976038" style="zoom:25%;" />
+<img src="https://user-images.githubusercontent.com/71322949/118235187-62939080-b4cf-11eb-8636-baf74eda617f.png" alt="Screenshot_1620976031" width = "150px" /><img src="https://user-images.githubusercontent.com/71322949/118235212-6a533500-b4cf-11eb-8e61-85b5d6b353a6.png" alt="Screenshot_1620976038"  width = "150px"/>
+
+
+
+
+
+
 
 - manifest에 인터넷 permission하기
 
