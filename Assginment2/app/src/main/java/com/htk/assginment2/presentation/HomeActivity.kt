@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.content.ContextCompat.startActivity
 import com.htk.assginment2.R
+import com.htk.assginment2.data.SoptUserAuthStorage
 import com.htk.assginment2.databinding.ActivityHomeBinding
 
 class HomeActivity : AppCompatActivity() {
@@ -19,7 +20,17 @@ class HomeActivity : AppCompatActivity() {
         homeBind()
         homeFragmentLink()
         moreButtonClickEvent()
+        clickLogoutButton()
     }
+
+    private fun clickLogoutButton(){
+        binding.btLogout.setOnClickListener {
+            SoptUserAuthStorage.clearUserData()
+            Log.d("hello",SoptUserAuthStorage.getUserId())
+            backSignInActivity()
+        }
+    }
+
 
     private fun homeBind(){
         with(binding) {
@@ -27,6 +38,11 @@ class HomeActivity : AppCompatActivity() {
             tvHomeid.text = intent.getStringExtra("id")
             tvHomeintroduce.text = "안드 사랑해 보고싶다. 안드 사랑 해보고싶다."
         }
+    }
+
+    private fun backSignInActivity(){
+        val intent = Intent(this@HomeActivity, SignInActivity::class.java)
+        startActivity(intent)
     }
 
     private fun homeFragmentLink(){
